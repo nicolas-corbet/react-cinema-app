@@ -49,10 +49,10 @@ jobs:
       - run:
           name: Deploy to AWS S3
           command: |
-            if ["${CURRENT_BRANCH}" == "master"]
+            if [ "${CURRENT_BRANCH}" == "master" ]
             then
               aws --region ${AWS_REGION} s3 sync ~repo/build s3://${AWS_BUCKET_PRODUCTION} --delete
-            elif ["${CURRENT_BRANCH}" == "staging"]
+            elif [ "${CURRENT_BRANCH}" == "staging" ]
             then
               aws --region ${AWS_REGION} s3 sync ~repo/build s3://${AWS_BUCKET_STAGING} --delete
             else
@@ -87,10 +87,10 @@ jobs:
           name: Deploy to AWS CloudFront
           command: |
             aws configure set preview.cloudfront
-            if ["${CURRENT_BRANCH}" == "master"]
+            if [ "${CURRENT_BRANCH}" == "master" ]
             then
               aws cloudfront create-invalidation --distribution-id ${CF_DISTRIBUTION_PRODUCTION} --paths /\*
-            elif ["${CURRENT_BRANCH}" == "staging"]
+            elif [ "${CURRENT_BRANCH}" == "staging" ]
             then
               aws cloudfront create-invalidation --distribution-id ${CF_DISTRIBUTION_STAGING} --paths /\*
             else
