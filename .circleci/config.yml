@@ -24,7 +24,7 @@ jobs:
 
   deploy-to-aws-s3:
     docker:
-      - image: circleci/node:15.6.0 #15.5.1
+      - image: cimg/node:15.6.0 #15.5.1
     working_directory: ~/repo
     steps:
       - checkout
@@ -37,7 +37,7 @@ jobs:
           command: |
             sudo apt-get -y -qq update
             sudo apt-get install -y awscli
-      #            sudo apt-get install -y python-pip python-dev build-essential
+      #     sudo apt-get install -y python-pip python-dev build-essential
       - run:
           name: Build Project
           command: |
@@ -61,7 +61,7 @@ jobs:
 
   deploy-to-aws-cloudfront:
     docker:
-      - image: circleci/node:15.6.0 #15.5.1
+      - image: cimg/node:15.6.0 #15.5.1
     working_directory: ~/repo
     steps:
       - checkout
@@ -74,15 +74,15 @@ jobs:
           command: |
             sudo apt-get -y -qq update
             sudo apt-get install -y awscli
-      #            sudo apt-get install -y python-pip python-dev build-essential
-      - run:
-          name: Build Project
-          command: |
-            npm install
-            npm run build
-            cd build
-            zip ../build.zip -r * .[^.]*
-            echo "Build successful"
+      #     sudo apt-get install -y python-pip python-dev build-essential
+      # - run:
+      #     name: Build Project
+      #     command: |
+      #       npm install
+      #       npm run build
+      #       cd build
+      #       zip ../build.zip -r * .[^.]*
+      #       echo "Build successful"
       - run:
           name: Deploy to AWS CloudFront
           command: |
