@@ -1,8 +1,7 @@
 version: 2.1
 
 executors:
-  name:
-    app-executor
+  app-executor:
     docker:
       - image: cimg/node:15.6.0 #15.5.1
     working_directory: ~/repo
@@ -15,8 +14,8 @@ aliases:
   - &restore-cache
     restore_cache:
       keys:
-      - app-{{ checksum "package.json"}}
-      - app-
+        - app-{{ checksum "package.json"}}
+        - app-
   - &install_dependencies
     run:
       name: Install dependencies
