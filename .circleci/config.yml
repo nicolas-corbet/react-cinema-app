@@ -1,43 +1,56 @@
 version: 2.1
 
+executors:
+  name:
+    app-executor
+    docker:
+      - image: cimg/node:15.6.0 #15.5.1
+    working_directory: ~/repo
+
+aliases:
+  - &show-current-branch-name
+    run:
+      name: Show current branch
+      command: echo ${CIRCLE_BRANCH}
+  - &restore-cache
+    restore_cache:
+      keys:
+      - app-{{ checksum "package.json"}}
+      - app-
+  - &install_dependencies
+    run:
+      name: Install dependencies
+      command: npm install
+  - &save_cache
+    save_cache:
+      paths:
+        - node_modules
+      key: app-{{ checksum "package.json"}}
+  - &install_aws_cli
+    run:
+      name: Installing AWS CLI
+      working_directory: /
+      command: |
+        sudo apt-get -y -qq update
+        sudo apt-get install -y awscli
+  #     sudo apt-get install -y python-pip python-dev build-essential
+
 jobs:
   build:
-    docker:
-      - image: cimg/node:15.6.0 #15.5.1
-    working_directory: ~/repo
+    executor: app-executor
     steps:
       - checkout
-      - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - restore_cache:
-          keys:
-            - app-{{ checksum "package.json"}}
-            - app-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: app-{{ checksum "package.json"}}
+      - *show-current-branch-name
+      - *restore-cache
+      - *install_dependencies
+      - *save_cache
 
   deploy-to-aws-s3:
-    docker:
-      - image: cimg/node:15.6.0 #15.5.1
-    working_directory: ~/repo
+    executor: app-executor
     steps:
       - checkout
-      - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo apt-get install -y awscli
-      #     sudo apt-get install -y python-pip python-dev build-essential
+      - *show-current-branch-name
+      - *install_aws_cli
       - run:
           name: Build Project
           command: |
@@ -60,21 +73,11 @@ jobs:
             fi
 
   deploy-to-aws-cloudfront:
-    docker:
-      - image: cimg/node:15.6.0 #15.5.1
-    working_directory: ~/repo
+    executor: app-executor
     steps:
       - checkout
-      - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo apt-get install -y awscli
-      #     sudo apt-get install -y python-pip python-dev build-essential
+      - *show-current-branch-name
+      - *install_aws_cli
       # - run:
       #     name: Build Project
       #     command: |
