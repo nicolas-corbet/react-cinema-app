@@ -29,6 +29,7 @@ yarn-error.log*
 # Local .terraform directories and files
 infrastructure/.terraform/*
 infrastructure/.terraform.lock.hcl
+infrastructure/graph.svg
 
 # .tfstate files
 infrastructure/*.tfstate
