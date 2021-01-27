@@ -29,7 +29,9 @@ aliases:
   - &install_dependencies
     run:
       name: Install dependencies
-      command: npm install
+      command: |
+        mkdir -p artifacts
+        npm install
   - &save_cache
     save_cache:
       paths:
@@ -141,8 +143,8 @@ jobs:
           name: Deploy to AWS S3
           command: |
             AWS_BUCKET_NAME=$(cat artifacts/cinema_app_bucket_name.txt | sed 's/\"//g')
-            echo AWS_BUCKET_NAME
-            aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_NAME} --delete
+            echo $AWS_BUCKET_NAME
+            aws --region ${AWS_REGION} s3 sync ~/repo/build s3://$AWS_BUCKET_NAME --delete
 
   deploy-to-aws-cloudfront:
     executor: app-executor
@@ -164,9 +166,9 @@ jobs:
           name: Deploy to AWS CloudFront
           command: |
             CF_DISTRIBUTION_ID=$(cat artifacts/cloudfront_distribution_id.txt | sed 's/\"//g')
-            echo CF_DISTRIBUTION_ID
+            echo $CF_DISTRIBUTION_ID
             aws configure set preview.cloudfront true
-            aws cloudfront create-invalidation --distribution-id ${CF_DISTRIBUTION_ID} --paths /\*
+            aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths /\*
 
   notify-via-slack:
     executor: slack-executor
@@ -236,7 +238,7 @@ jobs:
       - run:
           name: Terraform Destroy
           command: |
-            cd artifacts/infrastructure/
+            cd infrastructure/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform destroy -auto-approve
