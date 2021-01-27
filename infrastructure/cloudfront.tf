@@ -16,8 +16,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  retain_on_delete = true
-
   enabled             = true
   is_ipv6_enabled     = true
   comment             = ""
