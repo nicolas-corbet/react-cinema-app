@@ -21,7 +21,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = ""
   default_root_object = "index.html"
 
-  aliases = ["cinema-development-tf.corbet-it.fr"]
+  aliases = ["cinema${terraform.workspace == "master" ? "" : "-${terraform.workspace}"}.corbet-it.fr"]
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
