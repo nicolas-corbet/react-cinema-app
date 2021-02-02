@@ -69,8 +69,14 @@ const Slideshow = (props) => {
   const RenderArrows = () => {
     return (
       <div className="slider-arrows">
-        <div className="slider-arrow slider-arrow--left" onClick={() => moveSlideWithArrows('prev')} />
-        <div className="slider-arrow slider-arrow--right" onClick={() => moveSlideWithArrows('next')} />
+        <div
+          className="slider-arrow slider-arrow--left"
+          onClick={() => moveSlideWithArrows('prev')}
+        />
+        <div
+          className="slider-arrow slider-arrow--right"
+          onClick={() => moveSlideWithArrows('next')}
+        />
       </div>
     );
   };
@@ -78,7 +84,10 @@ const Slideshow = (props) => {
   const Indicators = (props) => {
     const { currentSlide } = props;
     const listIndicators = images.map((slide, i) => {
-      const btnClasses = i === currentSlide ? 'slider-navButton slider-navButton--active' : 'slider-navButton';
+      const btnClasses =
+        i === currentSlide
+          ? 'slider-navButton slider-navButton--active'
+          : 'slider-navButton';
       return <button className={btnClasses} key={i} />;
     });
     return <div className="slider-nav">{listIndicators}</div>;
@@ -87,7 +96,14 @@ const Slideshow = (props) => {
   return (
     <>
       <div className="slider">
-        <div className="slider-slides">{images && images.length && slideShow && <div className="slider-image" style={{ backgroundImage: `url(${slideShow.url})` }}></div>}</div>
+        <div className="slider-slides">
+          {images && images.length && slideShow && (
+            <div
+              className="slider-image"
+              style={{ backgroundImage: `url(${slideShow.url})` }}
+            ></div>
+          )}
+        </div>
         <Indicators currentSlide={slideIndex} />
         {showArrows ? <RenderArrows /> : null}
       </div>
