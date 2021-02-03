@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 
 import './Header.scss';
 import logo from '../../assets/cinema-logo.svg';
@@ -54,6 +55,8 @@ const Header = (props) => {
   const [type, setType] = useState('now_playing');
   const [search, setSearch] = useState('');
 
+  const history = useHistory();
+
   useEffect(() => {
     getMovies(type, page);
     setResponsePageNumber(page, totalPages);
@@ -70,6 +73,10 @@ const Header = (props) => {
     setSearch(e.target.value);
     searchQuery(e.target.value);
     searchResult(e.target.value);
+  };
+
+  const navigateToMainPage = () => {
+    history.push('/');
   };
 
   const toggleMenu = () => {
@@ -89,7 +96,7 @@ const Header = (props) => {
       <div className="header-nav-wrapper">
         <div className="header-bar"></div>
         <div className="header-navbar">
-          <div className="header-image">
+          <div className="header-image" onClick={() => navigateToMainPage()}>
             <img src={logo} alt="" />
           </div>
           <div
