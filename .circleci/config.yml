@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.2.0
+  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 executors:
   app-executor:
@@ -92,6 +93,14 @@ jobs:
       - run:
           name: Run unit test
           command: npm run test
+
+  sonarcloud-scan:
+    executor: app-executor
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - sonarcloud/scan
 
   terraform-validate-and-format:
     executor: terraform-executor
@@ -285,9 +294,19 @@ workflows:
                 - develop
                 - staging
                 - master
-      - terraform-validate-and-format:
+      - sonarcloud-scan:
+          context: SonarCloud
           requires:
             - unit-test
+          filters:
+            branches:
+              only:
+                - develop
+                - staging
+                - master
+      - terraform-validate-and-format:
+          requires:
+            - sonarcloud-scan
           filters:
             branches:
               only:
